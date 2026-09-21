@@ -3,363 +3,359 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>陳彥睿的個人網頁</title>
+    <title>作品集 Portfolio SPA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;600&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet">
+    
     <style>
-        /* 基礎全域設定與平滑滾動 */
-        html {
-            scroll-behavior: smooth;
-        }
+        /* 基礎與字體設定 */
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
-            color: #4a4036; /* 深棕色字體 */
-            background-color: #f5f1e7; /* 低飽和米色背景 */
-            line-height: 1.8;
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #F9F6F0;
+            overflow-x: hidden;
+        }
+        h1, .serif-font {
+            font-family: 'Noto Serif TC', serif;
         }
 
-        /* 置頂導覽列 (米棕色系) */
-        nav {
-            background-color: #d8cfc4; /* 低飽和棕灰色 */
-            position: fixed;
-            top: 0;
+        /* 隱藏捲動軸，保持版面純淨 */
+        ::-webkit-scrollbar { display: none; }
+        * { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* SPA 頁面切換過渡動畫 */
+        .view-container {
+            transition: opacity 0.6s ease-in-out, transform 0.6s ease-in-out;
             width: 100%;
-            z-index: 1000;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            min-height: 100vh;
         }
-        ul.main-menu {
-            list-style: none;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-        }
-        ul.main-menu > li {
-            position: relative;
-        }
-        ul.main-menu a {
-            display: block;
-            color: #4a4036;
-            text-decoration: none;
-            padding: 18px 25px;
-            font-weight: bold;
-            transition: background 0.3s, color 0.3s;
-        }
-        ul.main-menu a:hover {
-            background-color: #c4b8aa;
-        }
-
-        /* 二級菜單 (下拉式) */
-        ul.sub-menu {
-            display: none;
+        .view-hidden {
+            opacity: 0;
+            pointer-events: none;
             position: absolute;
-            top: 100%;
+            top: 0;
             left: 0;
-            background-color: #ebe4d8;
-            list-style: none;
-            padding: 0;
-            margin: 0;
-            min-width: 160px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            z-index: -1;
+            transform: translateY(20px);
+            visibility: hidden;
         }
-        ul.main-menu > li:hover ul.sub-menu {
-            display: block;
-        }
-        ul.sub-menu a {
-            padding: 12px 20px;
-            font-size: 0.9rem;
-            font-weight: normal;
-        }
-        ul.sub-menu a:hover {
-            background-color: #d8cfc4;
+        .view-active {
+            opacity: 1;
+            pointer-events: auto;
+            position: relative;
+            z-index: 10;
+            transform: translateY(0);
+            visibility: visible;
         }
 
-        /* 頁首 / Hero 區塊 (包含圓形照片) */
-        header {
-            text-align: center;
-            padding: 140px 20px 80px 20px;
-            background-color: #e8e1d5;
-            border-bottom: 1px solid #d8cfc4;
-        }
-        .profile-img {
-            width: 180px;
-            height: 180px;
-            border-radius: 50%;
-            object-fit: cover;
-            border: 6px solid #f5f1e7;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-            /* 背景灰色為預設佔位圖，可替換 src 屬性 */
-            background-color: #ccc; 
-        }
-        header h1 {
-            font-size: 2.8rem;
-            margin: 0;
-            color: #3b3228;
-            letter-spacing: 2px;
-        }
-        header p {
-            font-size: 1.1rem;
-            color: #6b5d4f;
-            margin-top: 10px;
-        }
-
-        /* 內容區塊共用設定 */
-        section {
-            padding: 70px 20px;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        section h2 {
-            color: #4a4036;
-            border-left: 5px solid #a69580;
-            padding-left: 15px;
-            margin-bottom: 30px;
-        }
-        .content-box {
-            background: #fffdf9;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 2px 15px rgba(0,0,0,0.03);
-            margin-bottom: 20px;
-        }
-
-        /* 按鈕樣式 */
-        .btn-link {
-            display: inline-block;
-            background-color: #a69580;
-            color: white;
-            padding: 10px 20px;
-            text-decoration: none;
-            border-radius: 5px;
-            font-weight: bold;
-            margin-top: 15px;
-            transition: background 0.3s;
-        }
-        .btn-link:hover {
-            background-color: #8b7d6a;
-        }
-
-        /* 列表樣式 */
-        ul.feature-list {
-            list-style-type: none;
-            padding: 0;
-        }
-        ul.feature-list li {
-            background: #fffdf9;
-            margin-bottom: 12px;
-            padding: 15px;
-            border-radius: 8px;
-            border-left: 4px solid #a69580;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
-        }
-        ul.feature-list li strong {
-            color: #6b5d4f;
-        }
-
-        /* 作品集 - 無限平移輪播設定 */
-        .carousel-container {
+        /* 跑馬燈容器設定 (漸層遮罩) */
+        .marquee-container {
             width: 100%;
             overflow: hidden;
-            white-space: nowrap;
-            background: #fffdf9;
-            padding: 20px 0;
-            border-radius: 10px;
-            box-shadow: 0 2px 15px rgba(0,0,0,0.03);
-            margin-bottom: 30px;
+            display: flex;
+            mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+            -webkit-mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+            padding: 1rem 0;
         }
-        .carousel-track {
-            display: inline-block;
-            /* 動畫：20秒內完成一次平移並無限循環 */
-            animation: scrollX 25s linear infinite;
+        .marquee-content {
+            display: flex;
+            width: max-content;
         }
-        .carousel-track img {
-            height: 200px;
-            width: auto;
-            border-radius: 8px;
-            margin: 0 10px;
-            object-fit: cover;
-            display: inline-block;
-        }
-        /* 當滑鼠懸停時暫停輪播 */
-        .carousel-container:hover .carousel-track {
+        /* 滑鼠懸停時暫停 */
+        .marquee-container:hover .marquee-content {
             animation-play-state: paused;
         }
-        @keyframes scrollX {
-            0% { transform: translateX(0); }
-            /* 移動到 -50% 達成無縫接軌 (需放置兩組相同圖片) */
-            100% { transform: translateX(-50%); } 
+
+        /* 跑馬燈方向與動畫 */
+        .scroll-left { animation: scroll-left 40s linear infinite; }
+        .scroll-right { animation: scroll-right 45s linear infinite; }
+        @keyframes scroll-left { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+        @keyframes scroll-right { 0% { transform: translateX(-50%); } 100% { transform: translateX(0); } }
+
+        /* 首頁跑馬燈卡片樣式 */
+        .portfolio-card {
+            width: 420px;
+            height: 280px;
+            flex-shrink: 0;
+            border-radius: 0.75rem;
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            cursor: pointer;
+        }
+        .portfolio-card:hover {
+            transform: scale(1.03);
+            box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.2);
+            z-index: 10;
+        }
+        .portfolio-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s ease;
+        }
+        .portfolio-card:hover img {
+            transform: scale(1.08); /* 內部微觀放大 */
         }
 
-        /* 頁尾與獨立社交按鈕組件 */
-        footer {
-            background-color: #d8cfc4;
-            text-align: center;
-            padding: 60px 20px;
-            margin-top: 40px;
+        /* 網格相片卡片樣式 */
+        .photo-card {
+            overflow: hidden;
+            border-radius: 0.5rem;
+            aspect-ratio: 1 / 1;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            background-color: #eee;
         }
-        .social-container {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 15px;
-            margin-bottom: 25px;
+        .photo-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
         }
-        .social-btn {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background-color: #fffdf9;
-            color: #4a4036;
-            text-decoration: none;
-            padding: 12px 25px;
-            border-radius: 30px;
-            font-weight: bold;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            transition: transform 0.2s, box-shadow 0.2s, background 0.3s;
+        .photo-card:hover img { transform: scale(1.08); }
+
+        /* 牆面角度翻轉特效 (Wall Angle Flip 3D) */
+        @keyframes wall-flip {
+            0% { 
+                opacity: 0; 
+                transform: perspective(1200px) rotateY(-90deg) translateZ(-150px); 
+            }
+            100% { 
+                opacity: 1; 
+                transform: perspective(1200px) rotateY(0deg) translateZ(0); 
+            }
         }
-        .social-btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
-            background-color: #a69580;
-            color: #fff;
+        .flip-anim {
+            animation: wall-flip 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+            transform-origin: left center; 
+            transform-style: preserve-3d;
         }
+
+        /* Gallery 選單標籤樣式 */
+        .tab-btn { position: relative; }
+        .tab-btn::after {
+            content: ''; position: absolute; bottom: -4px; left: 50%;
+            transform: translateX(-50%); width: 0; height: 1px;
+            background-color: #1f2937; transition: width 0.3s ease;
+        }
+        .tab-btn.active { color: #1f2937; font-weight: 600; }
+        .tab-btn.active::after { width: 60%; }
     </style>
 </head>
-<body>
+<body class="bg-gradient-to-b from-[#F9F6F0] via-[#FCFAF8] to-white min-h-screen text-gray-800 relative">
 
-    <!-- 導覽列 -->
-    <nav>
-        <ul class="main-menu">
-            <li><a href="#home">首頁</a></li>
-            <li>
-                <a href="#about">關於我 ▼</a>
-                <!-- 二級菜單 -->
-                <ul class="sub-menu">
-                    <li><a href="#about-intro">自我介紹</a></li>
-                </ul>
-            </li>
-            <li><a href="#school">我的學校</a></li>
-            <li><a href="#skills">專業技能</a></li>
-            <li><a href="#experience">經歷</a></li>
-            <li>
-                <a href="#portfolio">作品集 ▼</a>
-                <!-- 二級菜單 -->
-                <ul class="sub-menu">
-                    <li><a href="#portfolio-photo">攝影作品</a></li>
-                    <li><a href="#portfolio-3d">3D 列印作品</a></li>
-                </ul>
-            </li>
-        </ul>
-    </nav>
+    <!-- 首頁視圖 (跑馬燈) -->
+    <div id="home-view" class="view-container view-active flex flex-col justify-between pt-16">
+        <!-- 頂部標題區 -->
+        <header class="text-center px-4 mb-4">
+            <h1 class="text-4xl md:text-5xl font-semibold tracking-[0.2em] text-gray-800 mb-3 ml-2">作品集</h1>
+            <p class="text-sm md:text-base text-gray-500 font-light tracking-wider">PORTFOLIO & COLLECTION</p>
+            <div class="w-12 h-[1px] bg-gray-400 mx-auto mt-6"></div>
+        </header>
 
-    <!-- 開頭頁首 -->
-    <header id="home">
-        <!-- 圓形大頭貼，請替換 src 內的網址為你的照片 -->
-        <img src="https://scontent.fkhh2-2.fna.fbcdn.net/v/t39.30808-6/615353775_1610888237011018_6422810131984403357_n.jpg?stp=dst-jpg_tt6&cstp=mx2048x2048&ctp=s2048x2048&_nc_cat=110&ccb=1-7&_nc_sid=6ee11a&_nc_ohc=Rfd3Z5S0LE4Q7kNvwG-dxIr&_nc_oc=Adq8oeaENB_Uo4pKFYEnNkinVSb3DOqSSZnuhDlg_jH3qrupMP1ueav3zrmkO_rRKbVlJAx1odRuMun06_YXzv-W&_nc_zt=23&_nc_ht=scontent.fkhh2-2.fna&_nc_gid=24JM4bvMF4cdZtLMJ9WVyQ&_nc_ss=7b2a8&oh=00_AQLc6X5K8wVdAMMnmB5rDP6cf1N92ctXFmN5sV8B2x4zlw&oe=6AA5C596" alt="個人照片" class="profile-img">
-        <h1>陳彥睿的個人網頁</h1>
-        <p>資訊管理 | 程式開發 | 數位攝影 | 硬體探索</p>
-    </header>
-
-    <!-- 關於我區塊 -->
-    <section id="about">
-        <h2>關於我</h2>
-        <div class="content-box" id="about-intro">
-            <h3>自我介紹</h3>
-            <p>你好！我是陳彥睿，目前就讀資訊管理系。我對數位科技與實體硬體有著深厚的熱忱，無論是用程式語言解決邏輯問題、研究早期 CCD/CMOS 數位相機的規格，還是動手操作 3D 列印與輕檔車保養，我都樂在其中。期望未來能將資訊管理專業與多領域的興趣結合，持續創造價值。</p>
-        </div>
-    </section>
-
-    <!-- 我的學校區塊 -->
-    <section id="school">
-        <h2>我的學校</h2>
-        <div class="content-box">
-            <p>目前就讀：<strong>國立屏東大學 (NPTU) － 資訊管理系</strong></p>
-            <p>在這裡，我專注於程式邏輯養成與資訊系統的實務應用。</p>
-            <a href="https://www.nptu.edu.tw/" target="_blank" class="btn-link">前往國立屏東大學官方網站</a>
-        </div>
-    </section>
-
-    <!-- 專業技能區塊 -->
-    <section id="skills">
-        <h2>專業技能</h2>
-        <ul class="feature-list">
-            <li><strong>攝影：</strong> 熱愛數位攝影，熟悉相機規格與歷史，具備影像捕捉與美感敏銳度。</li>
-            <li><strong>程式開發：</strong> 具備 C# 與 C++ 開發能力，能運用程式解決邏輯演算問題。</li>
-            <li><strong>資料與文書：</strong> 熟悉 Office 軟體操作，並能運用 IBM SPSS 進行數據分析。</li>
-            <li><strong>軟體操作：</strong> 熟悉 Bambu Studio 等 3D 列印建模與切片軟體。</li>
-            <li><strong>語文能力：</strong> 具備紮實的英文能力。</li>
-        </ul>
-    </section>
-
-    <!-- 經歷區塊 -->
-    <section id="experience">
-        <h2>經歷</h2>
-        <ul class="feature-list">
-            <li><strong>班級代表：</strong> 負責班級事務協調與溝通，具備領導與組織能力。</li>
-            <li><strong>管樂社：</strong> 擔任打擊樂手，曾榮獲全國學生音樂比賽南區決賽優等。</li>
-            <li><strong>急救認證：</strong> 完成專業訓練，考取 BLS 基本救命術證照。</li>
+        <!-- 主體內容區 (跑馬燈) -->
+        <main class="flex-grow flex flex-col justify-center gap-6 md:gap-10 overflow-visible py-4">
             
-        </ul>
-    </section>
+            <!-- 第一層 - 由右至左 -->
+            <section class="marquee-container">
+                <div class="marquee-content scroll-left">
+                    <!-- 第一組相片 -->
+                    <div class="flex gap-6 pr-6">
+                        <div class="portfolio-card"><img src="https://github.com/raychen283/image-/blob/main/a6700/DSC01227.jpg?raw=true" alt="Img"></div>
+                        <div class="portfolio-card"><img src="https://github.com/raychen283/image-/blob/main/a6700/DSC00429.jpg?raw=true" alt="Img"></div>
+                        <div class="portfolio-card"><img src="https://github.com/raychen283/image-/blob/main/a6700/DSC01266.jpg?raw=true" alt="Img"></div>
+                        <div class="portfolio-card"><img src="https://github.com/raychen283/image-/blob/main/a6700/DSC00542.jpg?raw=true" alt="Img"></div>
+                        <div class="portfolio-card"><img src="https://github.com/raychen283/image-/blob/main/a6700/DSC00881.jpg?raw=true" alt="Img"></div>
+                    </div>
+                    <!-- 第二組相片 (複製以達到無縫循環) -->
+                    <div class="flex gap-6 pr-6">
+                        <div class="portfolio-card"><img src="https://github.com/raychen283/image-/blob/main/a6700/DSC01227.jpg?raw=true" alt="Img"></div>
+                        <div class="portfolio-card"><img src="https://github.com/raychen283/image-/blob/main/a6700/DSC00429.jpg?raw=true" alt="Img"></div>
+                        <div class="portfolio-card"><img src="https://github.com/raychen283/image-/blob/main/a6700/DSC01266.jpg?raw=true" alt="Img"></div>
+                        <div class="portfolio-card"><img src="https://github.com/raychen283/image-/blob/main/a6700/DSC00542.jpg?raw=true" alt="Img"></div>
+                        <div class="portfolio-card"><img src="https://github.com/raychen283/image-/blob/main/a6700/DSC00881.jpg?raw=true" alt="Img"></div>
+                    </div>
+                </div>
+            </section>
 
-    <!-- 作品集區塊 (含緩速平移輪播) -->
-    <section id="portfolio">
-        <h2>作品集</h2>
+            <!-- 第二層 - 由左至右 -->
+            <section class="marquee-container">
+                <div class="marquee-content scroll-right">
+                    <!-- 第一組相片 -->
+                    <div class="flex gap-6 pr-6">
+                        <div class="portfolio-card"><img src="https://github.com/raychen283/image-/blob/main/%E5%B0%8F%E7%B1%B314u/1789983322232.jpg?raw=true" alt="Img"></div>
+                        <div class="portfolio-card"><img src="https://github.com/raychen283/image-/blob/main/%E5%B0%8F%E7%B1%B314u/1789983322384.jpg?raw=true" alt="Img"></div>
+                        <div class="portfolio-card"><img src="https://github.com/raychen283/image-/blob/main/%E5%B0%8F%E7%B1%B314u/1789983322328.jpg?raw=true" alt="Img"></div>
+                        <div class="portfolio-card"><img src="https://github.com/raychen283/image-/blob/main/%E5%B0%8F%E7%B1%B314u/1789983322542.jpg?raw=true" alt="Img"></div>
+                        <div class="portfolio-card"><img src="https://github.com/raychen283/image-/blob/main/%E5%B0%8F%E7%B1%B314u/1789983322590.jpg?raw=true" alt="Img"></div>
+                    </div>
+                    <!-- 第二組相片 (無縫循環) -->
+                    <div class="flex gap-6 pr-6">
+                        <div class="portfolio-card"><img src="https://github.com/raychen283/image-/blob/main/%E5%B0%8F%E7%B1%B314u/1789983322232.jpg?raw=true" alt="Img"></div>
+                        <div class="portfolio-card"><img src="https://github.com/raychen283/image-/blob/main/%E5%B0%8F%E7%B1%B314u/1789983322384.jpg?raw=true" alt="Img"></div>
+                        <div class="portfolio-card"><img src="https://github.com/raychen283/image-/blob/main/%E5%B0%8F%E7%B1%B314u/1789983322328.jpg?raw=true" alt="Img"></div>
+                        <div class="portfolio-card"><img src="https://github.com/raychen283/image-/blob/main/%E5%B0%8F%E7%B1%B314u/1789983322542.jpg?raw=true" alt="Img"></div>
+                        <div class="portfolio-card"><img src="https://github.com/raychen283/image-/blob/main/%E5%B0%8F%E7%B1%B314u/1789983322590.jpg?raw=true" alt="Img"></div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- 首頁底部按鈕區 -->
+        <footer class="pb-16 pt-8 flex justify-center items-center">
+            <button id="btn-show-gallery" class="group relative inline-flex items-center justify-center px-10 py-3.5 text-base font-medium tracking-widest text-gray-700 bg-transparent border border-gray-300 rounded-full overflow-hidden transition-all duration-500 hover:border-gray-800 hover:shadow-lg hover:shadow-gray-200/50">
+                <span class="absolute inset-0 w-full h-full -mt-1 rounded-lg opacity-30 bg-gradient-to-b from-transparent via-transparent to-gray-200 pointer-events-none"></span>
+                <span class="relative transition-colors duration-500 group-hover:text-gray-900">查看更多相片</span>
+                <svg class="w-4 h-4 ml-2 relative transition-transform duration-500 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                </svg>
+            </button>
+        </footer>
+    </div>
+
+    <!-- 更多相片視圖 (網格) -->
+    <div id="gallery-view" class="view-container view-hidden flex flex-col pt-16">
+        <!-- 頂部導航與標題區 -->
+        <header class="text-center px-4 relative z-10 mb-8">
+            <!-- 返回按鈕 -->
+            <button id="btn-back-home" class="absolute left-6 md:left-12 top-2 text-gray-400 hover:text-gray-800 transition-colors flex items-center text-sm tracking-widest">
+                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 19l-7-7 7-7"></path>
+                </svg>
+                返回
+            </button>
+
+            <h1 class="text-3xl md:text-4xl font-semibold tracking-[0.2em] text-gray-800 mb-2 ml-2 mt-10 md:mt-0">作品集 - 更多相片</h1>
+            <p class="text-xs md:text-sm text-gray-400 font-light tracking-[0.3em] uppercase">Gallery Collection</p>
+            
+            <!-- 二級菜單 (相機分類) -->
+            <nav class="flex flex-wrap justify-center gap-6 md:gap-16 mt-10 text-sm tracking-wider text-gray-400 px-4">
+                <button class="tab-btn active transition-colors hover:text-gray-600" data-category="sony">由 Sony A6700 拍攝</button>
+                <button class="tab-btn transition-colors hover:text-gray-600" data-category="nikon">由 Xiaomi 14 ultra 拍攝</button>
+                <button class="tab-btn transition-colors hover:text-gray-600" data-category="canon">由 CCD 拍攝</button>
+            </nav>
+        </header>
+
+        <!-- 主體內容區 (相片網格) -->
+        <main class="flex-grow w-full max-w-6xl mx-auto px-6 pb-20">
+            <div id="gallery-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+                <!-- JavaScript 將動態載入帶有果凍回彈特效的相片卡片 -->
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // DOM 元素選取
+        const homeView = document.getElementById('home-view');
+        const galleryView = document.getElementById('gallery-view');
+        const btnShowGallery = document.getElementById('btn-show-gallery');
+        const btnBackHome = document.getElementById('btn-back-home');
         
-        <div id="portfolio-photo">
-            <h3>攝影作品展示</h3>
-            <p>滑鼠移入圖片區域可暫停輪播。</p>
-            <div class="carousel-container">
-                <div class="carousel-track">
-                    <!-- 第一組圖片 (請將 src 替換為你的作品網址) -->
-                    <img src="https://github.com/raychen283/image-/blob/main/DSC00389.JPG?raw=true" alt="攝影作品1">
-                    <img src="https://github.com/raychen283/image-/blob/main/DSC00391.JPG?raw=true" alt="攝影作品2">
-                    <img src="https://github.com/raychen283/image-/blob/main/DSC00430.JPG?raw=true" alt="攝影作品3">
-                    <img src="https://github.com/raychen283/image-/blob/main/DSC00542.JPG?raw=true" alt="攝影作品4">
-                    <!-- 第二組圖片 (與第一組完全相同，用來達成無縫輪播效果) -->
-                    <img src="https://github.com/raychen283/image-/blob/main/DSC00389.JPG?raw=true" alt="攝影作品1">
-                    <img src="https://github.com/raychen283/image-/blob/main/DSC00391.JPG?raw=true" alt="攝影作品2">
-                    <img src="https://github.com/raychen283/image-/blob/main/DSC00430.JPG?raw=true" alt="攝影作品3">
-                    <img src="https://github.com/raychen283/image-/blob/main/DSC00542.JPG?raw=true" alt="攝影作品4">
-                </div>
-            </div>
-        </div>
+        const gridContainer = document.getElementById('gallery-grid');
+        const tabButtons = document.querySelectorAll('.tab-btn');
 
-        <div id="portfolio-3d" style="margin-top: 40px;">
-            <h3>3D 列印作品</h3>
-            <div class="carousel-container">
-                <div class="carousel-track">
-                    <!-- 第一組圖片 (請將 src 替換為你的作品網址) -->
-                    <img src="https://drive.google.com/file/d/1-YwV3teT3-W65ct1T8rSQVwk05huaV3U/view?usp=drive_link" alt="攝影作品1">
-                    <img src="https://via.placeholder.com/300x200?text=Photo+2" alt="攝影作品2">
-                    <img src="https://via.placeholder.com/300x200?text=Photo+3" alt="攝影作品3">
-                    <img src="https://via.placeholder.com/300x200?text=Photo+4" alt="攝影作品4">
-                    <!-- 第二組圖片 (與第一組完全相同，用來達成無縫輪播效果) -->
-                    <img src="https://via.placeholder.com/300x200?text=Photo+1" alt="攝影作品1">
-                    <img src="https://via.placeholder.com/300x200?text=Photo+2" alt="攝影作品2">
-                    <img src="https://via.placeholder.com/300x200?text=Photo+3" alt="攝影作品3">
-                    <img src="https://via.placeholder.com/300x200?text=Photo+4" alt="攝影作品4">
-                </div>
-            </div>
-        </div>
+        // 模擬相機相片資料庫
+        const galleryData = {
+            sony: [
+                "https://github.com/raychen283/image-/blob/main/a6700/DSC01227.jpg?raw=true",
+                "https://github.com/raychen283/image-/blob/main/a6700/DSC01207.jpg?raw=true",
+                "https://github.com/raychen283/image-/blob/main/a6700/DSC01210.jpg?raw=true",
+                "https://github.com/raychen283/image-/blob/main/a6700/DSC00378.jpg?raw=true",
+                "https://github.com/raychen283/image-/blob/main/a6700/DSC00389.jpg?raw=true",
+                "https://github.com/raychen283/image-/blob/main/a6700/DSC00391.jpg?raw=true",
+                "https://github.com/raychen283/image-/blob/main/a6700/DSC00402.jpg?raw=true",
+                "https://github.com/raychen283/image-/blob/main/a6700/DSC00539.jpg?raw=true",
+                "https://github.com/raychen283/image-/blob/main/a6700/DSC00701.jpg?raw=true",
+                "https://github.com/raychen283/image-/blob/main/a6700/DSC00748.jpg?raw=true",
+                "https://github.com/raychen283/image-/blob/main/a6700/DSC01200.jpg?raw=true",
+                "https://github.com/raychen283/image-/blob/main/a6700/DSC00881.jpg?raw=true"
+            ],
+            nikon: [
+                "https://github.com/raychen283/image-/blob/main/%E5%B0%8F%E7%B1%B314u/1789983322186.jpg?raw=true",
+                "https://github.com/raychen283/image-/blob/main/%E5%B0%8F%E7%B1%B314u/1789983322232.jpg?raw=true",
+                "https://github.com/raychen283/image-/blob/main/%E5%B0%8F%E7%B1%B314u/1789983322294.jpg?raw=true",
+                "https://github.com/raychen283/image-/blob/main/%E5%B0%8F%E7%B1%B314u/1789983322328.jpg?raw=true",
+                "https://github.com/raychen283/image-/blob/main/%E5%B0%8F%E7%B1%B314u/1789983322384.jpg?raw=true",
+                "https://github.com/raychen283/image-/blob/main/%E5%B0%8F%E7%B1%B314u/1789983322627.jpg?raw=true"
+            ],
+            canon: [
+                "https://github.com/raychen283/image-/blob/main/ccd/1789982959647.jpg?raw=true",
+                "https://github.com/raychen283/image-/blob/main/ccd/1789982959730.jpg?raw=true",
+                "https://github.com/raychen283/image-/blob/main/ccd/1789982959756.jpg?raw=true",
+                "https://github.com/raychen283/image-/blob/main/ccd/1789982959778.jpg?raw=true",
+                "https://github.com/raychen283/image-/blob/main/ccd/1789982959811.jpg?raw=true",
+                "https://github.com/raychen283/image-/blob/main/ccd/1789982959838.JPG?raw=true"
+            ]
+        };
 
-        <div id="portfolio-3d" style="margin-top: 40px;">
-        </div>
-    </section>
+        // ====== 視圖切換邏輯 ======
+        function switchView(hideEl, showEl) {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            
+            // 替換 class 進行平滑過渡
+            hideEl.classList.remove('view-active');
+            hideEl.classList.add('view-hidden');
+            
+            showEl.classList.remove('view-hidden');
+            showEl.classList.add('view-active');
+        }
 
-    <!-- 頁尾與獨立社交按鈕組件 -->
-    <footer>
-        <h2 style="border:none; margin-bottom: 20px;">聯絡我</h2>
-        <div class="social-container">
-            <!-- 將 # 替換為你的真實網址 -->
-            <a href="https://www.facebook.com/chen.yan.rui.981543" target="_blank" class="social-btn">Facebook</a>
-            <a href="https://www.instagram.com/yanrui922/" target="_blank" class="social-btn">Instagram</a>
-            <a href="https://www.threads.com/@yanrui922?hl=zh-tw" target="_blank" class="social-btn">Threads</a>
-            <a href="mailto:ray1080160@gmail.com" class="social-btn">Email</a>
-        </div>
-        <p style="font-size: 0.9rem; color: #6b5d4f;">&copy; 2026 陳彥睿. All rights reserved.</p>
-    </footer>
+        // 綁定頁面跳轉按鈕
+        btnShowGallery.addEventListener('click', () => {
+            switchView(homeView, galleryView);
+            // 切換過去時，如果尚未加載過相片，預設載入 Sony
+            if (gridContainer.children.length === 0) {
+                renderGallery('sony');
+            }
+        });
 
+        btnBackHome.addEventListener('click', () => {
+            switchView(galleryView, homeView);
+        });
+
+        // ====== 牆面翻轉相片渲染邏輯 ======
+        function renderGallery(category) {
+            // 清空當前網格內容以觸發新的動畫
+            gridContainer.innerHTML = '';
+            
+            const images = galleryData[category];
+            
+            // 生成並插入帶有階層延遲動畫的相片卡片
+            images.forEach((imgSrc, index) => {
+                const card = document.createElement('div');
+                card.className = 'photo-card flip-anim'; 
+                
+                // 設定 Staggered 延遲 (稍微拉長至 0.1 秒，產生如骨牌般的翻轉流暢感)
+                const delay = index * 0.1; 
+                card.style.animationDelay = `${delay}s`;
+
+                const img = document.createElement('img');
+                img.src = imgSrc;
+                img.alt = `Photo by ${category}`;
+                img.loading = 'lazy'; 
+
+                card.appendChild(img);
+                gridContainer.appendChild(card);
+            });
+        }
+
+        // 綁定二級菜單標籤點擊事件
+        tabButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                if(button.classList.contains('active')) return; // 已選中則不動作
+
+                // 樣式切換
+                tabButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+
+                // 重新渲染該分類並播放動畫
+                const category = button.getAttribute('data-category');
+                renderGallery(category);
+            });
+        });
+
+    </script>
 </body>
 </html>
