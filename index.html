@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>攝影作品集</title>
+    <!-- 引入 Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- 引入 Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500&family=Noto+Serif+TC:wght@400;600&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            overflow-x: hidden;
+        }
+        h1, h2, .serif {
+            font-family: 'Noto Serif TC', serif;
+        }
+
+        /* 淺色紙張顆粒質感背景 */
+        .paper-bg {
+            background-color: #F4F1EA;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.06'/%3E%3C/svg%3E");
+        }
+
+        /* 跑馬燈動畫 */
+        @keyframes scroll-left {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        @keyframes scroll-right {
+            0% { transform: translateX(-50%); }
+            100% { transform: translateX(0); }
+        }
+
+        .marquee-container {
+            display: flex;
+            width: 200%;
+        }
+        .marquee-left {
+            animation: scroll-left 40s linear infinite;
+        }
+        .marquee-right {
+            animation: scroll-right 40s linear infinite;
+        }
+
+        .marquee-wrapper:hover .marquee-container {
+            animation-play-state: paused;
+        }
+        .photo-card {
+            transition: transform 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+        .photo-card:hover {
+            transform: scale(1.05) translateY(-5px);
+            z-index: 10;
+        }
+
+        .mask-edges {
+            mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+            -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+        }
+
+        /* 牆面角度式翻轉動畫 */
+        @keyframes wall-flip {
+            0% {
+                opacity: 0;
+                transform: perspective(1200px) rotateY(-90deg);
+            }
+            100% {
+                opacity: 1;
+                transform: perspective(1200px) rotateY(0deg);
+            }
+        }
+        
+        .flip-anim {
+            transform-origin: left center;
+            opacity: 0;
+            animation: wall-flip 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        }
+
+        /* 頁面切換上浮淡入動畫 */
+        .fade-in-up {
+            animation: fadeInUp 0.7s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+        }
+        @keyframes fadeInUp {
+            0% { 
+                opacity: 0; 
+                transform: translateY(30px); 
+            }
+            100% { 
+                opacity: 1; 
+                transform: translateY(0); 
+            }
+        }
+    </style>
+</head>
+<body class="paper-bg min-h-screen text-gray-800">
+
+    <!-- ==================== 第一頁：首頁跑馬燈 ==================== -->
+    <div id="page1" class="min-h-screen flex flex-col justify-center py-12 relative fade-in-up">
+        
+        <div class="text-center mb-10">
+            <h1 class="text-2xl md:text-3xl tracking-[0.2em] text-gray-800 font-medium mb-1">作品集</h1>
+            <p class="text-[10px] md:text-xs tracking-[0.4em] text-gray-400 serif uppercase">Portfolio</p>
+        </div>
+
+        <div class="marquee-wrapper w-full overflow-hidden mask-edges mb-6">
+            <div class="marquee-container marquee-left" id="marquee-left-track"></div>
+        </div>
+
+        <div class="marquee-wrapper w-full overflow-hidden mask-edges mb-12">
+            <div class="marquee-container marquee-right" id="marquee-right-track"></div>
+        </div>
+
+        <div class="text-center mt-auto">
+            <button onclick="switchPage('page2')" class="inline-flex items-center gap-2 px-6 py-2.5 rounded-full border border-gray-300/60 bg-white/80 backdrop-blur-sm hover:bg-white hover:shadow-md transition-all duration-300 group">
+                <span class="tracking-widest text-xs">查看更多相片</span>
+                <svg class="w-3.5 h-3.5 transform group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
+                </svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- ==================== 第二頁：更多相片 ==================== -->
+    <div id="page2" class="hidden min-h-screen py-12 px-6 md:px-12 max-w-7xl mx-auto fade-in-up">
+        
+        <button onclick="switchPage('page1')" class="mb-8 inline-flex items-center gap-2 text-gray-500 hover:text-gray-800 transition-colors group">
+            <svg class="w-4 h-4 transform group-hover:-translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+            </svg>
+            <span class="text-xs md:text-sm tracking-widest">返回首頁</span>
+        </button>
+
+        <div class="text-center mb-10">
+            <div class="flex flex-wrap justify-center gap-6 md:gap-12 border-b border-gray-200/60">
+                <button class="tab-btn pb-3 text-sm md:text-base tracking-widest text-gray-400 hover:text-gray-800 transition-colors relative" data-target="Sony a6700">
+                    由 Sony a6700 拍攝
+                    <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-gray-800 transition-all duration-300"></span>
+                </button>
+                <button class="tab-btn pb-3 text-sm md:text-base tracking-widest text-gray-400 hover:text-gray-800 transition-colors relative" data-target="Xiaomi 14 ultra">
+                    由 Xiaomi 14 ultra 拍攝
+                    <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-gray-800 transition-all duration-300"></span>
+                </button>
+                <button class="tab-btn pb-3 text-sm md:text-base tracking-widest text-gray-400 hover:text-gray-800 transition-colors relative" data-target="CCD">
+                    由 CCD 拍攝
+                    <span class="absolute bottom-0 left-0 w-0 h-0.5 bg-gray-800 transition-all duration-300"></span>
+                </button>
+            </div>
+        </div>
+
+        <div id="photo-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 md:gap-6">
+            <!-- 圖片將動態生成在此 -->
+        </div>
+    </div>
+
+    <!-- ==================== 全螢幕相片燈箱 (Lightbox) ==================== -->
+    <div id="lightbox" class="fixed inset-0 bg-black/95 backdrop-blur-sm z-50 hidden flex items-center justify-center opacity-0 transition-opacity duration-300" onclick="closeLightbox()">
+        
+        <button class="absolute top-6 right-6 text-white/70 hover:text-white z-50 p-2 transition-colors">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+        
+        <button onclick="prevImage(event)" class="absolute left-2 md:left-6 top-1/2 -translate-y-1/2 text-white/40 hover:text-white z-50 p-4 transition-colors">
+            <svg class="w-10 h-10 md:w-14 md:h-14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+        </button>
+        
+        <img id="lightbox-img" src="" class="max-h-[90vh] max-w-[80vw] md:max-w-[85vw] object-contain select-none shadow-2xl rounded-sm" alt="Enlarged Photo" onclick="event.stopPropagation()">
+        
+        <button onclick="nextImage(event)" class="absolute right-2 md:right-6 top-1/2 -translate-y-1/2 text-white/40 hover:text-white z-50 p-4 transition-colors">
+            <svg class="w-10 h-10 md:w-14 md:h-14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+        </button>
+        
+        <div id="lightbox-counter" class="absolute bottom-6 left-1/2 -translate-x-1/2 text-white/60 tracking-widest text-sm serif"></div>
+    </div>
+
+    <script>
+        const GITHUB_USER = 'raychen283'; 
+        const GITHUB_REPO = 'image-'; 
+
+        let currentImagesArray = [];
+        let currentImageIndex = 0;
+
+        function switchPage(pageId) {
+            document.getElementById('page1').classList.add('hidden');
+            document.getElementById('page2').classList.add('hidden');
+            
+            const targetPage = document.getElementById(pageId);
+            targetPage.classList.remove('hidden');
+            
+            targetPage.classList.remove('fade-in-up');
+            void targetPage.offsetWidth; 
+            targetPage.classList.add('fade-in-up');
+
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            if(pageId === 'page2' && document.getElementById('photo-grid').innerHTML.trim() === '') {
+                const a6700Btn = document.querySelector('.tab-btn[data-target="Sony a6700"]');
+                if(a6700Btn) a6700Btn.click();
+            }
+        }
+
+        async function fetchImagesFromGitHub(folderPath) {
+            const apiUrl = `https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${folderPath}`;
+            try {
+                const response = await fetch(apiUrl);
+                if (!response.ok) throw new Error('API 請求失敗');
+                const data = await response.json();
+                
+                if (!Array.isArray(data)) return [];
+                
+                return data
+                    .filter(file => file.type === 'file' && file.name.match(/\.(jpg|jpeg|png|webp)$/i))
+                    .map(file => file.download_url);
+            } catch (error) {
+                console.error('抓取圖片失敗:', error);
+                return [];
+            }
+        }
+
+        async function loadCategory(cameraBrand) {
+            const gridContainer = document.getElementById('photo-grid');
+            gridContainer.innerHTML = '<p class="text-gray-400 col-span-full text-center py-20 tracking-widest text-sm">讀取照片中...</p>';
+            
+            const folderName = cameraBrand.toLowerCase().replace(/ /g, '_');
+            const folderPath = `photos/${folderName}`;
+            
+            const images = await fetchImagesFromGitHub(folderPath);
+            gridContainer.innerHTML = ''; 
+
+            if (images.length === 0) {
+                gridContainer.innerHTML = `<p class="text-gray-400 col-span-full text-center py-20 tracking-widest text-sm">目前 ${cameraBrand} 分類暫無相片，<br>請確認 GitHub 中是否有 ${folderPath} 資料夾及圖片。</p>`;
+                return;
+            }
+
+            currentImagesArray = images;
+
+            images.forEach((url, index) => {
+                const item = document.createElement('div');
+                item.className = 'w-full aspect-square overflow-hidden flip-anim shadow-[0_4px_20px_-5px_rgba(0,0,0,0.1)] rounded-2xl cursor-pointer group relative ring-1 ring-black/5 bg-white';
+                item.style.animationDelay = `${index * 0.1}s`;
+                item.onclick = () => openLightbox(index);
+
+                const img = document.createElement('img');
+                img.src = url;
+                img.className = 'w-full h-full object-cover transition-transform duration-700 group-hover:scale-110';
+                img.loading = 'lazy';
+                
+                const overlay = document.createElement('div');
+                overlay.className = 'absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100';
+                overlay.innerHTML = `<svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7"></path></svg>`;
+
+                item.appendChild(img);
+                item.appendChild(overlay);
+                gridContainer.appendChild(item);
+            });
+        }
+
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+        const lightboxCounter = document.getElementById('lightbox-counter');
+
+        function updateLightboxImage() {
+            lightboxImg.src = currentImagesArray[currentImageIndex];
+            lightboxCounter.textContent = `${currentImageIndex + 1} / ${currentImagesArray.length}`;
+        }
+
+        function openLightbox(index) {
+            currentImageIndex = index;
+            updateLightboxImage();
+            lightbox.classList.remove('hidden');
+            setTimeout(() => {
+                lightbox.classList.remove('opacity-0');
+                lightbox.classList.add('opacity-100');
+            }, 10);
+            document.body.style.overflow = 'hidden'; 
+        }
+
+        function closeLightbox() {
+            lightbox.classList.remove('opacity-100');
+            lightbox.classList.add('opacity-0');
+            setTimeout(() => {
+                lightbox.classList.add('hidden');
+                lightboxImg.src = ''; 
+            }, 300);
+            document.body.style.overflow = 'auto'; 
+        }
+
+        function prevImage(e) {
+            if (e) e.stopPropagation(); 
+            currentImageIndex = (currentImageIndex > 0) ? currentImageIndex - 1 : currentImagesArray.length - 1;
+            updateLightboxImage();
+        }
+
+        function nextImage(e) {
+            if (e) e.stopPropagation();
+            currentImageIndex = (currentImageIndex < currentImagesArray.length - 1) ? currentImageIndex + 1 : 0;
+            updateLightboxImage();
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (!lightbox.classList.contains('hidden')) {
+                if (e.key === 'Escape') closeLightbox();
+                if (e.key === 'ArrowLeft') prevImage();
+                if (e.key === 'ArrowRight') nextImage();
+            }
+        });
+
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                document.querySelectorAll('.tab-btn span').forEach(span => {
+                    span.classList.remove('w-full');
+                    span.classList.add('w-0');
+                });
+                document.querySelectorAll('.tab-btn').forEach(b => {
+                    b.classList.remove('text-gray-800');
+                    b.classList.add('text-gray-400');
+                });
+
+                const currentBtn = e.currentTarget;
+                currentBtn.classList.remove('text-gray-400');
+                currentBtn.classList.add('text-gray-800');
+                currentBtn.querySelector('span').classList.remove('w-0');
+                currentBtn.querySelector('span').classList.add('w-full');
+
+                const brand = currentBtn.getAttribute('data-target');
+                loadCategory(brand);
+            });
+        });
+
+        function initMarquee() {
+            // 第一排相片 (5張)
+            const row1Images = [
+                'https://github.com/raychen283/image-/blob/main/photos/sony_a6700/DSC01227.jpg?raw=true',
+                'https://github.com/raychen283/image-/blob/main/photos/sony_a6700/DSC00881.jpg?raw=true',
+                'https://github.com/raychen283/image-/blob/main/photos/sony_a6700/DSC00356.jpg?raw=true',
+                'https://github.com/raychen283/image-/blob/main/photos/sony_a6700/DSC00391.jpg?raw=true',
+                'https://github.com/raychen283/image-/blob/main/photos/sony_a6700/DSC00542.jpg?raw=true'
+            ];
+            
+            // 第二排相片 (6張)
+            const row2Images = [
+                'https://github.com/raychen283/image-/blob/main/photos/sony_a6700/DSC00701.jpg?raw=true',
+                'https://github.com/raychen283/image-/blob/main/photos/xiaomi_14_ultra/1789983322294.jpg?raw=true',
+                'https://github.com/raychen283/image-/blob/main/photos/xiaomi_14_ultra/1789983322328.jpg?raw=true',
+                'https://github.com/raychen283/image-/blob/main/photos/xiaomi_14_ultra/1789983322384.jpg?raw=true',
+                'https://github.com/raychen283/image-/blob/main/photos/xiaomi_14_ultra/1789983322590.jpg?raw=true',
+                'https://github.com/raychen283/image-/blob/main/photos/xiaomi_14_ultra/1789983322627.jpg?raw=true'
+            ];
+
+            let htmlStr1 = '';
+            for(let i=0; i<2; i++){
+                row1Images.forEach(url => {
+                    htmlStr1 += `<div class="flex-none w-[280px] md:w-[400px] aspect-[3/2] px-3 photo-card">
+                        <img src="${url}" class="w-full h-full object-cover shadow-[0_10px_30px_-10px_rgba(0,0,0,0.25)] rounded-2xl ring-1 ring-black/5 bg-white" alt="Portfolio Image">
+                    </div>`;
+                });
+            }
+            document.getElementById('marquee-left-track').innerHTML = htmlStr1;
+            
+            let htmlStr2 = '';
+            for(let i=0; i<2; i++){
+                row2Images.forEach(url => {
+                    htmlStr2 += `<div class="flex-none w-[280px] md:w-[400px] aspect-[3/2] px-3 photo-card">
+                        <img src="${url}" class="w-full h-full object-cover shadow-[0_10px_30px_-10px_rgba(0,0,0,0.25)] rounded-2xl ring-1 ring-black/5 bg-white" alt="Portfolio Image">
+                    </div>`;
+                });
+            }
+            document.getElementById('marquee-right-track').innerHTML = htmlStr2;
+        }
+
+        initMarquee();
+    </script>
+</body>
+</html>
